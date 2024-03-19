@@ -78,5 +78,5 @@ $$
 
 ```python
 Er2, R2 = row_echelon_form(Er1 @ Er1.T)
-X_min_2 = ER1.T @ (R2 @ B) # 列满秩的条件下的最小二乘解
+X_min_f = ER1.T @ (R2 @ X_min2) # 列不满秩的条件下的最范数解
 ```
