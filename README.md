@@ -71,7 +71,7 @@ $$
 则x的最小范数解为
 
 $$
-X_{min_f} = E_{r1}^T(E_{r1}^TE_{r1})^{-1}X_{min_2} = E_{r1}^TR_2X_{min_2}
+X_{min_f} = E_{r1}^T(E_{r1}^TE_{r1})^{-1}X_{min_2} = E_{r1}^TR_2X_{min_2} = E_{r1}^TR_2R_1A^TB
 $$
 
 代码
@@ -80,3 +80,13 @@ $$
 Er2, R2 = row_echelon_form(Er1 @ Er1.T)
 X_min_f = ER1.T @ (R2 @ X_min_2) # 列不满秩的条件下的最范数解
 ```
+
+$$
+AX = E_{r1}^TR_2R_1A^TB
+$$
+
+推论，任何矩阵的伪逆
+$$
+A^{-1} = E_{r1}^TR_2R_1A^T
+$$
+
