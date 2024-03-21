@@ -1,6 +1,6 @@
 # lstsq
 
-推荐使用lstsq_fast.py版本
+推荐使用`lstsq_fast.py`版本
 
 先看这个：[知乎：最小二乘解和最小范数解的一般公式](https://zhuanlan.zhihu.com/p/503664717)
 
