@@ -25,6 +25,7 @@ def row_sample2(A):
     A_ext = np.hstack((A, np.identity(n)))  # 生成增广矩阵
     smooth = 1e-9
     r = 0  # 行指针, 标志当前处理的行, 执行完之后也代表矩阵的秩
+    cols = []  # 存储行最简对应的列的索引
     for c in range(m):  # c 是列指针，用于指向处理的类
         if not swap_main_item(A_ext, r, c, smooth):  # 当前列的没有元素能作为主元，则跳过
             continue
@@ -33,30 +34,35 @@ def row_sample2(A):
             A_ext[q, :] = A_ext[q, :] - (A_ext[r, :] * A_ext[q, c]) / (A_ext[r, c])
         for q in range(r + 1, n):  # 下侧归0化
             A_ext[q, :] = A_ext[q, :] - (A_ext[r, :] * A_ext[q, c]) / (A_ext[r, c])
+        cols.append(c)
         r += 1  # 向下移动一行
     R, Er = A_ext[:, m:], A_ext[:, :m]
-    return R, Er, r
+    return R, Er, r, cols
 
 
-# 满秩分解
+# 行最简最大秩分解
 def full_rank_split(A):
-    # 满秩分解 A === F @ G,
-    R, G, r = row_sample2(A)  # 初等行变换，化简成行最简，主元为1
-    F, E, _ = row_sample2(R)  # 初等行变换，化简成行最简，主元为1
-    # 满秩压缩，将F和G转化为列满秩和行满秩矩阵
-    F = F[:, :r]
+    # A === F @ G，G是A的行最简形式非零行构成的矩阵，F是G的主元对应的列从A中获取的对应列
+    R, G, r, Cols = row_sample2(A)  # 初等行变换，化简成行最简，主元为1 
     G = G[:r, :]
+    F = A[:, Cols]
     return F, G
+
+# R[A ak] -> [G Rak] -_R>[G,] 
+
+# 可逆矩阵求逆
+def inv(A): 
+    return row_sample2(A)[0]  # 初等行变换，化简成行最简，主元为1
 
 
 # 基于满秩分解的伪逆分解
 def pinv_split(A):
-    F, G = full_rank_split(A)
     # 满秩分解 A === F @ G
+    F, G = full_rank_split(A)
     FT_F = F.T @ F  # rxr的矩阵
     G_GT = G @ G.T  # rxr的矩阵
     FT_F_G_GT = FT_F @ G_GT  # rxr的矩阵
-    inv, _, _ = row_sample2(FT_F_G_GT)  # 初等行变换，化简成行最简，主元为1
+    inv =  inv(FT_F_G_GT)  # 
     return G.T, inv, F.T
 
 
